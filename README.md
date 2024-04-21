@@ -7,7 +7,8 @@ Dependency: Bio.SeqIO, Bio.SeqRecord
 python adaptor_removal_for_submit.py RC_folder fasta_folder output_folder
 ```
 
-
 RC_folder is a folder with all your 'RemainContamination' files
+
 fasta_folder is a folder with your genomes your need to fix (This script identifies genome name with format 'XX_XX_bins_XX.fasta'. If your submitted genomes are not named like that you need to custom the 66th line in this script.
+
 output_folder will contain your genomes after adaptor removal
