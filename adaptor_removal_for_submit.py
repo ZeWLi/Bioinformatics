@@ -39,14 +39,14 @@ def remove_adaptor(dic,fasta,outfasta):
             seq2 = record.seq[end:]
 
             if len(seq1) == 0 and len(seq2) != 0:
-                filted_records.append(SeqRecord(seq2, id=f'{record.id}_rm_adaptor', description=""))
+                filted_records.append(SeqRecord(seq2, id=f'{record.id.split("_adaptor_")[0]}_rm_adaptor', description=""))
             elif len(seq2) == 0 and len(seq1) != 0:
-                filted_records.append(SeqRecord(seq1, id=f'{record.id}_rm_adaptor', description=""))
+                filted_records.append(SeqRecord(seq1, id=f'{record.id.split("_adaptor_")[0]}_rm_adaptor', description=""))
             elif len(seq1) != 0 and len(seq2) != 0:
                 if len(seq1) > 200:
-                    filted_records.append(SeqRecord(seq1, id=f'{record.id}_rm_adaptor_1', description=""))
+                    filted_records.append(SeqRecord(seq1, id=f'{record.id.split("_adaptor_")[0]}_rm_adaptor_1', description=""))
                 if len(seq2) >= 200:
-                    filted_records.append(SeqRecord(seq2, id=f'{record.id}_rm_adaptor_2', description=""))
+                    filted_records.append(SeqRecord(seq2, id=f'{record.id.split("_adaptor_")[0]}_rm_adaptor_2', description=""))
 
     if count != len(list(dic.keys())):
         print('Some seqs are not found in the fasta file')
