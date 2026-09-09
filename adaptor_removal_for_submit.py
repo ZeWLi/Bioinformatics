@@ -62,7 +62,7 @@ def main():
     os.chdir(sys.argv[1])
 
     for file in RC_files:
-        split = file.rstrip('.txt').split('_')
+        split = os.path.splitext(file)[0].replace('DRTY-11_1_', 'DRTY-11.1_', 1).split('_')
         bin_name = f'{split[-4]}_{split[-3]}_{split[-2]}_{split[-1]}.fasta'
         RC_parse[bin_name] = parse_RC_file(file)
 
