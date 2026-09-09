@@ -57,14 +57,39 @@ def remove_adaptor(dic,fasta,outfasta):
 def main():
     pwd = os.getcwd()
 
+    fasta_lis = os.listdir(sys.argv[2])
     RC_files = os.listdir(sys.argv[1])
     RC_parse = {}
     os.chdir(sys.argv[1])
 
     for file in RC_files:
-        split = os.path.splitext(file)[0].replace('DRTY-11_1_', 'DRTY-11.1_', 1).split('_')
-        bin_name = f'{split[-4]}_{split[-3]}_{split[-2]}_{split[-1]}.fasta'
-        RC_parse[bin_name] = parse_RC_file(file)
+        rc_parse = parse_RC_file(file)
+        stem = os.path.splitext(file)[0]
+        if stem.startswith('RemainingContamination_'):
+            stem = stem[len('RemainingContamination_'):]
+        if stem.startswith('split') and '_' in stem and stem[5:].split('_', 1)[0].isdigit():
+            stem = stem.split('_', 1)[1]
+        parts = stem.split('_')
+        if len(parts) < 4:
+            raise ValueError(f'Cannot parse the genome name from {file}')
+        report_sample = '_'.join(parts[:-3])
+        report_suffix = tuple(parts[-3:])
+
+        def normalize_sample(name):
+            return name.replace('.', '_')
+
+        candidates = []
+        for fasta in fasta_lis:
+            if not fasta.endswith('.fasta'):
+                continue
+            fasta_parts = os.path.splitext(fasta)[0].split('_')
+            if len(fasta_parts) >= 4 and tuple(fasta_parts[-3:]) == report_suffix:
+                fasta_sample = '_'.join(fasta_parts[:-3])
+                if normalize_sample(fasta_sample) == normalize_sample(report_sample):
+                    candidates.append(fasta)
+        if len(candidates) != 1:
+            raise ValueError(f'Cannot uniquely identify the genome for {file}: {candidates}')
+        RC_parse[candidates[0]] = rc_parse
 
     os.chdir(pwd)
 
@@ -76,7 +101,6 @@ def main():
 
     abs = os.path.abspath(sys.argv[3])
 
-    fasta_lis = os.listdir(sys.argv[2])
     os.chdir(sys.argv[2])
 
     for fasta in fasta_lis:
